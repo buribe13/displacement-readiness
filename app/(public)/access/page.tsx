@@ -1,27 +1,31 @@
 /**
  * ACCESS REQUIRED PAGE
- * 
+ *
  * This page is shown when users attempt to access the dashboard
  * without proper organization credentials. It explains:
  * - What the tool is for
  * - Why access is restricted
  * - How to get access (for legitimate organizations)
- * 
+ *
  * ETHICAL DESIGN NOTE:
  * This page is intentionally transparent about the tool's purpose
  * and limitations. We don't hide what it does - we explain why
  * it's restricted and how that protects vulnerable populations.
  */
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { DemoAccessButton } from './DemoAccessButton';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { DemoAccessButton } from "./DemoAccessButton";
 
 export default function AccessPage() {
-  const isDev = process.env.NODE_ENV === 'development';
-  
   return (
     <main className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-6">
@@ -31,7 +35,8 @@ export default function AccessPage() {
             Displacement Readiness Dashboard
           </h1>
           <p className="text-muted-foreground">
-            A situational awareness tool for housing and homelessness service providers
+            A situational awareness tool for housing and homelessness service
+            providers
           </p>
           <Badge variant="outline" className="mt-2">
             Organization Access Only
@@ -55,8 +60,9 @@ export default function AccessPage() {
               displacement pressure in Koreatown, Los Angeles.
             </p>
             <p>
-              It is designed for <strong>harm reduction and preparedness</strong>,
-              helping organizations coordinate outreach and resources before
+              It is designed for{" "}
+              <strong>harm reduction and preparedness</strong>, helping
+              organizations coordinate outreach and resources before
               displacement events occur.
             </p>
           </CardContent>
@@ -83,44 +89,42 @@ export default function AccessPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <p>
-              Restricting access protects vulnerable populations. Even well-intentioned
-              tools can cause harm if misused. By limiting access to verified service
-              organizations, we ensure the tool serves its intended purpose.
+              Restricting access protects vulnerable populations. Even
+              well-intentioned tools can cause harm if misused. By limiting
+              access to verified service organizations, we ensure the tool
+              serves its intended purpose.
             </p>
             <p className="text-muted-foreground">
-              If you represent a housing or homelessness service organization operating
-              in Los Angeles and would like access, please contact the project
-              administrators.
+              If you represent a housing or homelessness service organization
+              operating in Los Angeles and would like access, please contact the
+              project administrators.
             </p>
           </CardContent>
         </Card>
 
-        {/* Demo Access (Development Only) */}
-        {isDev && (
-          <Card className="border-dashed">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                Demo Access
-                <Badge variant="secondary">Development Only</Badge>
-              </CardTitle>
-              <CardDescription>
-                This option is only available in development mode
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DemoAccessButton />
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                Sets a session cookie to access the dashboard for demonstration purposes.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* Demo Access */}
+        <Card className="border-dashed">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              Demo Access
+              <Badge variant="secondary">Prototype</Badge>
+            </CardTitle>
+            <CardDescription>
+              Enable temporary access to view the dashboard prototype
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DemoAccessButton />
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Sets a session cookie to access the dashboard for demonstration
+              purposes.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Footer */}
         <div className="text-center text-xs text-muted-foreground pt-4">
-          <p>
-            Koreatown, Los Angeles · Prototype · Not for production use
-          </p>
+          <p>Koreatown, Los Angeles · Prototype · Not for production use</p>
           <p className="mt-1">
             Built with harm reduction principles · Data is simulated/delayed
           </p>
@@ -129,4 +133,3 @@ export default function AccessPage() {
     </main>
   );
 }
-

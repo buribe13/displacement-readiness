@@ -1,33 +1,28 @@
 /**
  * DEMO ACCESS API ROUTE
  *
- * Sets a cookie for demo access in development mode.
- * This is a workaround for server action issues in Next.js 16.
+ * Sets a cookie for demo access (prototype mode).
+ * This allows temporary access to the dashboard for demonstration purposes.
  */
 
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function POST() {
-  // Only allow in development
-  if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json(
-      { error: "Not available in production" },
-      { status: 403 }
-    );
-  }
+export async function POST(request: NextRequest) {
+  // Get the origin to redirect back to the same domain
+  const origin = request.headers.get("origin") || request.url;
+  const baseUrl = new URL(origin).origin;
 
-  const response = NextResponse.redirect(
-    new URL(
-      "/dashboard",
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3002"
-    )
-  );
+  const response = NextResponse.redirect(new URL("/dashboard", baseUrl));
 
   // Set the org_access cookie
-  // This route only runs in development, so secure should be false
+  // Use secure cookies in production (HTTPS), false in development
+  const nodeEnv = process.env.NODE_ENV as string | undefined;
+  const isProduction = nodeEnv === "production";
+
   response.cookies.set("org_access", "1", {
     httpOnly: true,
-    secure: false, // Always false in development (this route only runs in dev)
+    secure: isProduction, // Secure cookies required for HTTPS in production
     sameSite: "lax",
     maxAge: 60 * 60 * 24, // 24 hours
     path: "/",
