@@ -1,81 +1,87 @@
 /**
  * DASHBOARD PAGE
- * 
+ *
  * Main situational awareness view for housing/homelessness service organizations.
- * 
+ *
  * LAYOUT:
  * - Left (2/3 width): Interactive map of Koreatown with signal overlays
  * - Right (1/3 width): Tabbed panel with Signal Feed and Context/Guidance
- * 
+ *
  * ETHICAL DESIGN PRINCIPLES IMPLEMENTED:
- * 
+ *
  * 1. DELAYED/SIMULATED DATA ONLY
  *    All data displayed is either simulated (for this prototype) or would be
  *    delayed by 24+ hours in production. This prevents use as a real-time
  *    surveillance or targeting tool.
- * 
+ *
  * 2. AGGREGATE SIGNALS, NOT INDIVIDUALS
  *    The dashboard tracks institutional activity (cleanups, permits, closures)
  *    and environmental patterns - never individual people or their locations.
- * 
+ *
  * 3. CONTEXTUAL INTERPRETATION
  *    Raw data without context is dangerous. Every signal includes interpretation
  *    to help organizations understand what it means for their work.
- * 
+ *
  * 4. GEOGRAPHIC BOUNDS
  *    The map is intentionally limited to Koreatown to prevent scope creep
  *    toward city-wide surveillance capabilities.
- * 
+ *
  * 5. PERSISTENT DISCLAIMERS
  *    Users are constantly reminded of the tool's purpose and limitations.
  */
 
 /**
  * DASHBOARD PAGE
- * 
+ *
  * Main situational awareness view for housing/homelessness service organizations.
- * 
+ *
  * LAYOUT:
  * - Left (2/3 width): Interactive map of Koreatown with signal overlays
  * - Right (1/3 width): Tabbed panel with Signal Feed and Context/Guidance
- * 
+ *
  * ETHICAL DESIGN PRINCIPLES IMPLEMENTED:
- * 
+ *
  * 1. DELAYED/SIMULATED DATA ONLY
  *    All data displayed is either simulated (for this prototype) or would be
  *    delayed by 24+ hours in production. This prevents use as a real-time
  *    surveillance or targeting tool.
- * 
+ *
  * 2. AGGREGATE SIGNALS, NOT INDIVIDUALS
  *    The dashboard tracks institutional activity (cleanups, permits, closures)
  *    and environmental patterns - never individual people or their locations.
- * 
+ *
  * 3. CONTEXTUAL INTERPRETATION
  *    Raw data without context is dangerous. Every signal includes interpretation
  *    to help organizations understand what it means for their work.
- * 
+ *
  * 4. GEOGRAPHIC BOUNDS
  *    The map is intentionally limited to Koreatown to prevent scope creep
  *    toward city-wide surveillance capabilities.
- * 
+ *
  * 5. PERSISTENT DISCLAIMERS
  *    Users are constantly reminded of the tool's purpose and limitations.
  */
 
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPanel } from '@/components/dashboard/MapPanel';
-import { SignalFeed } from '@/components/dashboard/SignalFeed';
-import { ContextPanel } from '@/components/dashboard/ContextPanel';
+import { useEffect, useState, useCallback } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MapPanel } from "@/components/dashboard/MapPanel";
+import { SignalFeed } from "@/components/dashboard/SignalFeed";
+import { ContextPanel } from "@/components/dashboard/ContextPanel";
 
-import type { CivicSignal, SignalsResponse, SignalsSummary } from '@/lib/signals/types';
+import type {
+  CivicSignal,
+  SignalsResponse,
+  SignalsSummary,
+} from "@/lib/signals/types";
 
 export default function DashboardPage() {
   const [signals, setSignals] = useState<CivicSignal[]>([]);
   const [summary, setSummary] = useState<SignalsSummary | null>(null);
-  const [selectedSignalId, setSelectedSignalId] = useState<string | undefined>();
+  const [selectedSignalId, setSelectedSignalId] = useState<
+    string | undefined
+  >();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -88,12 +94,12 @@ export default function DashboardPage() {
 
         // Fetch signals and summary in parallel
         const [signalsRes, summaryRes] = await Promise.all([
-          fetch('/api/signals'),
-          fetch('/api/signals/summary'),
+          fetch("/api/signals"),
+          fetch("/api/signals/summary"),
         ]);
 
         if (!signalsRes.ok || !summaryRes.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error("Failed to fetch data");
         }
 
         const signalsData: SignalsResponse = await signalsRes.json();
@@ -102,8 +108,8 @@ export default function DashboardPage() {
         setSignals(signalsData.signals);
         setSummary(summaryData);
       } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Unable to load dashboard data. Please try again.');
+        console.error("Error fetching dashboard data:", err);
+        setError("Unable to load dashboard data. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -122,7 +128,9 @@ export default function DashboardPage() {
     return (
       <div className="h-full flex items-center justify-center bg-muted/20">
         <div className="text-center p-8 rounded-lg border bg-background">
-          <div className="text-sm text-foreground font-medium">Loading dashboard...</div>
+          <div className="text-sm text-foreground font-medium">
+            Loading dashboard...
+          </div>
           <div className="text-xs text-muted-foreground mt-2">
             Fetching simulated civic signals
           </div>
@@ -149,9 +157,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex min-h-0">
       {/* Map Panel - 2/3 width */}
-      <div className="flex-[2] min-w-0">
+      <div className="flex-[2] min-w-0 h-full">
         <MapPanel
           signals={signals}
           pressureLevel={summary?.pressureLevel}
@@ -177,7 +185,10 @@ export default function DashboardPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="signals" className="flex-1 m-0 data-[state=inactive]:hidden">
+          <TabsContent
+            value="signals"
+            className="flex-1 m-0 data-[state=inactive]:hidden"
+          >
             <SignalFeed
               signals={signals}
               selectedSignalId={selectedSignalId}
@@ -185,7 +196,10 @@ export default function DashboardPage() {
             />
           </TabsContent>
 
-          <TabsContent value="guidance" className="flex-1 m-0 data-[state=inactive]:hidden">
+          <TabsContent
+            value="guidance"
+            className="flex-1 m-0 data-[state=inactive]:hidden"
+          >
             <ContextPanel summary={summary || undefined} />
           </TabsContent>
         </Tabs>
@@ -193,4 +207,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
