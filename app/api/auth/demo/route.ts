@@ -24,9 +24,10 @@ export async function POST() {
   );
 
   // Set the org_access cookie
+  // This route only runs in development, so secure should be false
   response.cookies.set("org_access", "1", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: false, // Always false in development (this route only runs in dev)
     sameSite: "lax",
     maxAge: 60 * 60 * 24, // 24 hours
     path: "/",

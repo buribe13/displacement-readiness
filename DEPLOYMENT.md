@@ -73,6 +73,7 @@ You can set different values for different environments:
 - **Development:** Your local development token
 
 To set environment-specific values:
+
 1. In Environment Variables settings
 2. When adding/editing a variable, select specific environments
 3. Add the variable multiple times with different values for each environment
@@ -82,14 +83,17 @@ To set environment-specific values:
 ### Map Still Not Loading After Deployment
 
 1. **Check Environment Variable:**
+
    - Verify `NEXT_PUBLIC_MAPBOX_TOKEN` is set in Vercel
    - Ensure it's enabled for the correct environment (Production/Preview)
 
 2. **Redeploy:**
+
    - Environment variables are only loaded at build time
    - After adding/changing variables, you must redeploy
 
 3. **Check Browser Console:**
+
    - Look for "Mapbox token check" log
    - Check for any Mapbox-related errors
 
