@@ -189,3 +189,4 @@ export const MAX_SCALE = 4.0; // Can zoom in to 4x detail
  */
 export const ZOOM_STEP = 1.15;
 
+

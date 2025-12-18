@@ -251,3 +251,4 @@ export const IMPACT_LEVEL_INFO: Record<
     description: "Significant timing considerations",
   },
 };
+

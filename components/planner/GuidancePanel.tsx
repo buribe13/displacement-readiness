@@ -38,11 +38,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   CheckCircle2,
   AlertCircle,
   XCircle,
@@ -58,42 +53,6 @@ import {
 } from "lucide-react";
 
 import type { OutreachWindow, WindowType } from "@/lib/temporal/aggregate";
-
-// Create a simple Collapsible component if not available
-const SimpleCollapsible = ({
-  open,
-  onOpenChange,
-  children,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
-}) => {
-  return <div>{children}</div>;
-};
-
-const SimpleCollapsibleTrigger = ({
-  asChild,
-  children,
-  onClick,
-}: {
-  asChild?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-}) => {
-  return <div onClick={onClick}>{children}</div>;
-};
-
-const SimpleCollapsibleContent = ({
-  children,
-  isOpen,
-}: {
-  children: React.ReactNode;
-  isOpen: boolean;
-}) => {
-  if (!isOpen) return null;
-  return <div>{children}</div>;
-};
 
 /**
  * General guidance for each window type.
