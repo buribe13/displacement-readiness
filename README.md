@@ -1,217 +1,212 @@
-# Displacement Readiness Dashboard
+# Outreach Window Planner
 
-A situational awareness tool for housing and homelessness service organizations operating in Los Angeles, with an initial focus on Koreatown.
+A temporal planning tool for housing and homelessness outreach organizations in Los Angeles, with an initial focus on Koreatown.
 
-**Purpose:** Harm reduction and preparedness — helping organizations anticipate displacement pressure, coordinate outreach, and avoid reactive crisis response.
+## Core Concept
 
-**This is a prototype/proposition, not a production system.**
+This tool reframes displacement as a **temporal coordination problem**, not a spatial one.
 
----
+Instead of asking _where_ harm occurs, it helps organizations understand _when_ care can be delivered with less disruption.
 
-## Ethical Foundation
+## Design Philosophy
 
-This tool is built on explicit ethical principles:
+### Time Over Space
 
-### What This Tool Does
-- Aggregates **public and delayed civic data** (sanitation schedules, event permits, road closures, transit disruptions)
-- Provides **situational awareness** of institutional activity patterns
-- Helps organizations **plan proactively** rather than respond reactively
-- Supports **coordination** among service providers
+- **Timeline is the primary interface** - not maps
+- We model temporal rhythms (sanitation cycles, events, shelter hours)
+- Geography is contextual, not central
 
-### What This Tool Does NOT Do
-- **Track individuals** or their locations
-- Show **real-time law enforcement** positions
-- Access **immigration enforcement** data
-- **Predict** individual displacement events
-- Serve data to the **general public**
-- Replace **direct community engagement**
+### Harm Reduction Through Timing
 
-### Data Policy
-- All data is **delayed by 24+ hours** or **simulated** (in this prototype)
-- Data represents **institutional activity**, never individuals
-- Geographic scope is **intentionally bounded** to Koreatown
-- Every signal includes **interpretation context**, not just raw data
+- Identify low-disruption windows for effective outreach
+- Understand when multiple disruptive signals overlap
+- Plan proactively, not reactively
 
----
+### Ethical Safeguards
 
-## Technical Stack
+- **No real-time data** - all data is delayed 24h+ or simulated
+- **No individual tracking** - signals represent institutional activity only
+- **No enforcement guidance** - this is a coordination tool, not a surveillance system
+- **Transparent limitations** - disclaimers are built into every view
 
-- **Next.js 15** (App Router)
+## Target Users
+
+This is an **organization-only** planning tool designed for:
+
+- Outreach coordinators
+- Case managers
+- Volunteer organizers
+- Program directors
+
+**This is not a public-facing app.**
+
+## Tech Stack
+
+- **Next.js 16** (App Router)
 - **TypeScript**
-- **shadcn/ui** components
-- **Tailwind CSS** v4
-- **Mapbox GL JS** for geospatial visualization
-
----
+- **shadcn/ui** for all UI components
+- **Tailwind CSS**
+- Server Components where appropriate
+- API Routes for aggregating temporal data
 
 ## Getting Started
 
-### Prerequisites
-- Node.js 20+
-- npm (or pnpm if available)
-- Mapbox account and access token
-
-### Installation
-
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd displacement-readiness
-
 # Install dependencies
 npm install
 
-# Copy environment variables
-cp .env.example .env.local
-
-# Add your Mapbox token to .env.local
-# NEXT_PUBLIC_MAPBOX_TOKEN=your_token_here
-
-# Start development server
+# Run development server
 npm run dev
 ```
 
-### Accessing the Dashboard
-
-The dashboard is **not publicly accessible** by design. To access it in development:
-
-1. **Via the access page:** Visit `http://localhost:3000/access` and click "Enable Demo Access"
-2. **Via browser cookie:** Set `org_access=1` cookie
-3. **Via request header:** Include `x-org-access: 1` header
-
----
+Open [http://localhost:3000](http://localhost:3000) to see the landing page.
 
 ## Project Structure
 
 ```
-displacement-readiness/
-├── app/
-│   ├── (protected)/           # Org-only routes
-│   │   ├── dashboard/         # Main dashboard page
-│   │   └── layout.tsx         # Protected layout with AppShell
-│   ├── (public)/              # Public routes
-│   │   └── access/            # Access required page
-│   ├── api/
-│   │   └── signals/           # Signal data endpoints
-│   ├── layout.tsx             # Root layout
-│   └── page.tsx               # Redirects to dashboard
-├── components/
-│   ├── dashboard/             # Dashboard-specific components
-│   │   ├── MapPanel.tsx       # Koreatown map with signals
-│   │   ├── SignalFeed.tsx     # Signal list with filters
-│   │   └── ContextPanel.tsx   # Guidance and context
-│   ├── shell/                 # Layout components
-│   │   └── AppShell.tsx       # Main app wrapper
-│   └── ui/                    # shadcn/ui components
-├── lib/
-│   ├── geo/
-│   │   └── koreatown.ts       # Geographic constants
-│   └── signals/
-│       ├── types.ts           # Signal type definitions
-│       └── mock.ts            # Simulated signal data
-└── middleware.ts              # Org-only access gate
+app/
+├── page.tsx                    # Landing page with ethical framing
+├── planner/
+│   ├── page.tsx               # Main planner (server component)
+│   ├── PlannerClient.tsx      # Client interactivity
+│   └── layout.tsx             # Planner shell
+├── api/
+│   └── temporal/
+│       ├── signals/route.ts   # Temporal signals API
+│       ├── windows/route.ts   # Computed windows API
+│       └── scenario/route.ts  # Speculative scenario API
+
+components/
+├── planner/
+│   ├── TimelineView.tsx       # Primary timeline interface
+│   ├── OverlapViewer.tsx      # Signal overlap visualization
+│   ├── GuidancePanel.tsx      # Non-prescriptive planning guidance
+│   └── ContextualMapView.tsx  # Optional secondary map view
+├── shell/
+│   └── PlannerShell.tsx       # App shell with ethics reminders
+└── ui/                        # shadcn/ui components
+
+lib/
+├── temporal/
+│   ├── types.ts               # Temporal signal types
+│   ├── mock.ts                # Simulated temporal data
+│   └── aggregate.ts           # Window computation logic
+└── utils.ts                   # Utility functions
 ```
 
----
+## Data Model
 
-## API Endpoints
+Temporal signals include:
 
-### GET /api/signals
+- `signalType`: sanitationCycle, publicEvent, shelterIntakeHours, transitDisruption, serviceBottleneck
+- `timeRange`: start/end with LA timezone
+- `impactLevel`: low/medium/high (on outreach effectiveness)
+- `confidenceLevel`: low/medium/high (data reliability)
+- `interpretationNotes`: Plain-language context
+- `dataLatencyHours`: How delayed the data is (always 24h+)
+- `isSimulated`: Boolean flag (true for all prototype data)
 
-Returns normalized civic signals for the dashboard.
+## Core Features
 
-**Query Parameters:**
-- `kind` - Filter by signal type (sanitation, eventPermit, roadClosure, transitDisruption, displacementIndicator)
-- `confidence` - Filter by confidence level (low, medium, high)
-- `limit` - Maximum number of signals to return
+### 1. Outreach Window Timeline (Primary)
 
-**Response includes:**
-- `signals` - Array of CivicSignal objects
-- `meta` - Metadata including disclaimer, latency info, simulated flag
+Vertical time-based visualization showing:
 
-### GET /api/signals/summary
+- "Safer outreach windows"
+- "High disruption periods"
+- Contributing signals and explanations
 
-Returns aggregated statistics for dashboard overview.
+### 2. Signal Overlap Viewer
 
-**Response includes:**
-- `byKind` - Signal counts by type
-- `byConfidence` - Signal counts by confidence level
-- `pressureLevel` - Aggregate pressure assessment (low, elevated, high)
-- `pressureExplanation` - Human-readable explanation
+Shows when multiple disruptive signals overlap, with:
 
----
+- Plain-language explanations of compound effects
+- Coordination suggestions
 
-## Signal Types
+### 3. Planning Guidance Panel
 
-| Kind | Description | Example Sources |
-|------|-------------|-----------------|
-| `sanitation` | Scheduled cleanup activities | LA Sanitation |
-| `eventPermit` | Large event permits | FilmLA, Special Events |
-| `roadClosure` | Road closures, security perimeters | LADOT, LAPD |
-| `transitDisruption` | Transit service changes | LA Metro |
-| `displacementIndicator` | Historical patterns, aggregated trends | 311 data, surveys |
+Non-prescriptive suggestions including:
 
----
+- Timing strategies per window type
+- Coordination ideas
+- General best practices
 
-## Expanding to Other Neighborhoods
+### 4. Scenario Mode (Speculative)
 
-The architecture supports adding other LA neighborhoods. To add a new area:
+Simulate major events (e.g., Olympics) to see:
 
-1. Create a new file in `lib/geo/` with boundary constants
-2. Update the geographic filter in API routes
-3. Add neighborhood selector to the UI (if multi-neighborhood view is desired)
+- How outreach windows compress
+- Which periods become more challenging
+- **Clearly labeled as speculative**
 
-**Important:** Each neighborhood addition should be a deliberate choice with community input, not automatic scaling. The bounded geographic scope is an intentional ethical constraint.
+### 5. Contextual Map (Optional Secondary)
 
----
+De-emphasized geographic context:
 
-## Production Considerations
+- Generalized areas only
+- Not the primary interface
+- Works without Mapbox token (text fallback)
 
-Before deploying to production:
+## Ethical Design
 
-1. **Authentication:** Replace the prototype cookie gate with proper authentication (NextAuth, Clerk, etc.)
-2. **Data Sources:** Connect to real civic data APIs with appropriate delays
-3. **Access Logging:** Implement audit logging for accountability
-4. **Community Review:** Have the tool reviewed by affected communities and advocacy organizations
-5. **Legal Review:** Ensure compliance with data privacy regulations
-6. **Rate Limiting:** Implement rate limiting on API routes
+### What This Tool Does NOT Do
 
----
+- ❌ Track individuals or their locations
+- ❌ Show real-time data
+- ❌ Display law enforcement activity
+- ❌ Provide enforcement guidance
+- ❌ Predict individual outcomes
 
-## Design Decisions
+### Built-in Safeguards
 
-### Why Koreatown-bounded?
-- Prevents "surveillance creep" toward city-wide monitoring
-- Keeps focus on community-level situational awareness
-- Allows affected community to verify tool respects boundaries
+- Persistent "Simulated Data" and "24h+ Delay" badges
+- "About & Ethics" dropdown in header
+- Footer disclaimers on every view
+- Inline code comments explaining ethical decisions
+- API responses include mandatory disclaimer field
 
-### Why delayed data?
-- Prevents use as real-time targeting tool
-- Shifts focus from reaction to planning
-- Maintains separation from enforcement activities
+## UI Tone
 
-### Why muted colors?
-- Avoids alarming visuals that suggest emergency response
-- Supports calm, deliberate planning rather than panic
-- Respects that this is a planning tool, not an alert system
+- **Calm**: Muted colors, no alarming visuals
+- **Operational**: Clear, actionable information
+- **Accessible**: WCAG 2.1 AA compliant
+- **Trustworthy**: Transparent about limitations
 
-### Why org-only access?
-- Protects vulnerable populations from misuse
-- Ensures tool serves intended purpose
-- Enables accountability and trust
+## Environment Variables
 
----
+```bash
+# Optional: Mapbox token for map tab (works without it)
+NEXT_PUBLIC_MAPBOX_TOKEN=pk.xxxxx
+
+# Optional: Base URL for API calls in server components
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+## Prototype Status
+
+This is a **prototype of a proposition**, not a production system.
+
+Prioritizes:
+
+- Clarity and safety over feature completeness
+- Explainable logic over complex algorithms
+- Ethical guardrails over convenience
+
+## Why This Approach
+
+Traditional displacement tools often center maps and location—which can enable surveillance.
+
+By centering **time**, we:
+
+- Shift focus to coordination, not tracking
+- Enable planning without enabling harm
+- Respect individual autonomy
+- Support organizational judgment
 
 ## License
 
-[Add appropriate license]
+This project is for educational and demonstration purposes.
 
 ---
 
-## Acknowledgments
-
-Built with consideration for the communities this tool is designed to serve. The design prioritizes harm reduction over surveillance, awareness over control, and community trust over technical capability.
-
----
-
-*This is a prototype for demonstration and discussion purposes. All data displayed is simulated.*
+_The Outreach Window Planner reframes displacement as a temporal coordination problem. Instead of asking where harm occurs, it helps organizations understand when care can be delivered with less disruption._

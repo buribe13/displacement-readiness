@@ -94,12 +94,20 @@ To set environment-specific values:
 
 3. **Check Browser Console:**
 
-   - Look for "Mapbox token check" log
-   - Check for any Mapbox-related errors
+   - Check for any Mapbox-related errors (e.g., 401 Unauthorized)
 
 4. **Verify Token Format:**
+
    - Mapbox tokens start with `pk.eyJ...`
    - Ensure no extra spaces or quotes in Vercel settings
+
+5. **Check Mapbox Token "Allowed URLs":**
+   - In your [Mapbox Account](https://account.mapbox.com/access-tokens/), edit the token
+   - Under **URL restrictions**, ensure your allowed URLs include:
+     - `http://localhost:3000/*` (for local development)
+     - Your Vercel production domain (e.g., `https://your-app.vercel.app/*`)
+     - Any preview deployment patterns (e.g., `https://*.vercel.app/*`)
+   - If "Allowed URLs" is empty, any origin can use the token (less secure but simpler for prototypes)
 
 ### Build Errors
 

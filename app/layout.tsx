@@ -1,11 +1,16 @@
 /**
  * ROOT LAYOUT
  *
- * Global layout wrapper for the Displacement Readiness Dashboard.
+ * Global layout wrapper for the Outreach Window Planner.
  *
  * ETHICAL NOTE:
  * The application metadata explicitly states this is for organization use only.
  * Search engines should not index this tool (robots meta tag).
+ *
+ * DESIGN PHILOSOPHY:
+ * This tool prioritizes time over space. Instead of asking "where" harm occurs,
+ * we ask "when" care can be delivered with less disruption. This is a temporal
+ * coordination problem, not a spatial surveillance one.
  */
 
 import type { Metadata } from "next";
@@ -24,9 +29,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Displacement Readiness Dashboard",
+  title: "Outreach Window Planner",
   description:
-    "Situational awareness tool for housing and homelessness service organizations. Organization access only.",
+    "Temporal planning tool for housing and homelessness outreach organizations. Helps identify low-disruption windows for effective outreach. Organization use only.",
   // Prevent search engine indexing - this is an internal tool
   robots: {
     index: false,
